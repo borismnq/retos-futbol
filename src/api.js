@@ -45,3 +45,15 @@ export const obtenerRetosPorUsuario = async (userId) => {
   const res = await fetch(`${API_URL}/users/${userId}/matches`);
   return await res.json();
 };
+
+export const actualizarMatchStatus = async (id, userId, status) => {
+  const res = await fetch(`${API_URL}/matches/${id}/status`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      user_id: userId,
+      status: status
+    })
+  });
+  return await res.json();
+};

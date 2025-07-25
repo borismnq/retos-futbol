@@ -5,6 +5,7 @@ import {
   unirseAReto,
   salirDeReto,
   confirmarAsistencia,
+  actualizarMatchStatus
 } from "../api";
 
 function DetalleReto({ retoId, userId = "usuario123" }) {
@@ -21,9 +22,15 @@ function DetalleReto({ retoId, userId = "usuario123" }) {
     cargarReto();
   }, [retoId]);
 
-  // const yaUnido = reto.players?.some(j => j.user_id === userId);
-  // console.log(yaUnido)
-
+  const handleCancelarReto = async () => {
+    try {
+      await actualizarMatchStatus(retoId, userId, "cancelled")
+      alert("Reto cancelado");
+      await cargarReto(); // o router.navigate() si vuelves a la lista
+    } catch (err) {
+      console.error("Error cancelando reto", err);
+    }
+  };
   const unirse = async () => {
     await unirseAReto(retoId, userId);
     await cargarReto();
@@ -55,54 +62,58 @@ function DetalleReto({ retoId, userId = "usuario123" }) {
         <strong>Duración:</strong> {reto.duration} minutos<br />
         <strong>Estado:</strong> {reto.status}<br />
       </p>
+      <p>
+        Estado:{" "}
+        <span
+          style={{
+            color:
+              reto.status === "cancelled"
+                ? "red"
+                : reto.status === "confirmed"
+                ? "green"
+                : reto.status === "completed"
+                ? "gray"
+                : "blue", // abierto o default
+            fontWeight: "bold",
+          }}
+        >
+          {reto.status?.toUpperCase()}
+        </span>
+      </p>
 
       <h3>Jugadores ({reto.players?.length || 0})</h3>
+      <p>
+        Confirmados: {reto.players?.filter(p => p.confirmed).length || 0} / {reto.players?.length || 0}
+      </p>
       <ul>
-        {reto.players?.map((j, idx) => (
-          <li key={idx}>
-            {j.name} {j.confirmed ? "✅" : "⏳"}
+        {reto.players?.map((player) => (
+          <li key={player.user_id}>
+            {player.name} - {player.confirmed ? "✅ Confirmado" : "❌ No confirmado"}
           </li>
         ))}
       </ul>
-      <div style={{ marginTop: "1rem" }}>
-        {!estaDentro && <button onClick={unirse}>⚽ Unirme</button>}
-        {estaDentro && (
-          <>
-            {!estaConfirmado && <button onClick={confirmar}>✅ Confirmar</button>}
-            <button onClick={salir}>❌ Salir</button>
-          </>
+      {reto.status !== "cancelled" && (
+        <div style={{ marginTop: "1rem" }}>
+          {!estaDentro && <button onClick={unirse}>⚽ Unirme</button>}
+          {estaDentro && (
+            <>
+              {!estaConfirmado && <button onClick={confirmar}>✅ Confirmar</button>}
+              <button onClick={salir}>❌ Salir</button>
+            </>
+          )}
+        </div>
+      )}
+        {reto.creator_id === userId && reto.status !== "cancelled" && (
+          <button
+            onClick={handleCancelarReto}
+            style={{ marginTop: "1rem", backgroundColor: "red", color: "white" }}
+          >
+            Cancelar reto
+          </button>
         )}
-      </div>
-      
     </div>
   );
-  // return (
-  //   <div style={{ border: "1px solid #ccc", padding: "1rem" }}>
-  //     <h2>{reto.mode} en {reto.place}</h2>
-  //     <p>{reto.date} a las {reto.time} — {reto.duration} min</p>
-  //     <p><strong>Estado:</strong> {reto.status}</p>
-
-  //     <h3>Jugadores ({reto.players?.length || 0})</h3>
-  //     <ul>
-  //       {reto.players?.map(j => (
-  //         <li key={j.user_id}>
-  //           {j.name} {j.confirmed ? "✅" : "❌"}
-  //         </li>
-  //       ))}
-  //     </ul>
-
-  //     <div style={{ marginTop: "1rem" }}>
-  //       {yaUnido ? (
-  //         <>
-  //           <button onClick={salir}>❌ Salir</button>{" "}
-  //           <button onClick={confirmar}>✅ Confirmar</button>
-  //         </>
-  //       ) : (
-  //         <button onClick={unirse}>⚽ Unirse al reto</button>
-  //       )}
-  //     </div>
-  //   </div>
-  // );
+ 
 }
 
 export default DetalleReto;
