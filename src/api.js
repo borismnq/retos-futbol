@@ -40,3 +40,8 @@ export const confirmarAsistencia = async (id, userId) => {
   const res = await axios.post(`${API_URL}/matches/${id}/confirm`, userId);
   return res.data;
 };
+
+export const obtenerRetosPorUsuario = async (userId) => {
+  const res = await fetch(`${API_URL}/users/${userId}/matches`);
+  return await res.json();
+};
