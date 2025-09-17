@@ -1,43 +1,95 @@
 import { useEffect, useState } from "react";
-import { obtenerRetosPorUsuario } from "../api"; // la crearemos
-const userId = "usuario123"; // temporal
+import { obtenerRetosPorUsuario } from "../api";
 
-function PerfilUsuario() {
+function PerfilUsuario({ user }) {  
   const [retosCreados, setRetosCreados] = useState([]);
   const [retosParticipando, setRetosParticipando] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   const cargarRetos = async () => {
-    const data = await obtenerRetosPorUsuario(userId);
-    setRetosCreados(data.created);
-    setRetosParticipando(data.participating);
+    try {
+      const data = await obtenerRetosPorUsuario(user.uid);
+      setRetosCreados(data.created || []);
+      setRetosParticipando(data.participating || []);
+    } catch (error) {
+      console.error("Error loading user matches:", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
-    cargarRetos();
-  }, []);
+    if (user?.uid) {
+      cargarRetos();
+    }
+  }, [user?.uid]);
+
+  if (!user) {
+    return null;
+  }
+
+  const stats = user.stats || {};
 
   return (
     <div>
-      <h2>👤 Perfil de Usuario</h2>
+      {/* User Profile Header */}
+      <div className="card">
+        <div className="profile-header">
+          <img 
+            src={user.photoURL} 
+            alt={user.displayName}
+            className="profile-avatar"
+          />
+          <div className="profile-info">
+            <h2>{user.displayName}</h2>
+            {user.username && (
+              <p className="profile-username">@{user.username}</p>
+            )}
+            <p className="profile-email">{user.email}</p>
+          </div>
+        </div>
 
-      <h3>📌 Retos creados por mí</h3>
-      <ul>
-        {retosCreados.map((reto) => (
-          <li key={reto.id}>
-            {reto.mode} en {reto.place} el {reto.date} a las {reto.time}
-          </li>
-        ))}
-      </ul>
+        {/* User Stats */}
+        {stats.user_id && (
+          <div className="stats-grid">
+            <div className="stat-card">
+              <div className="stat-icon">⚽</div>
+              <span className="stat-value">{stats.matches_played || 0}</span>
+              <span className="stat-label">Partidos</span>
+            </div>
+            <div className="stat-card">
+              <div className="stat-icon">🏆</div>
+              <span className="stat-value">{stats.wins || 0}</span>
+              <span className="stat-label">Victorias</span>
+            </div>
+            <div className="stat-card">
+              <div className="stat-icon">🤝</div>
+              <span className="stat-value">{stats.draws || 0}</span>
+              <span className="stat-label">Empates</span>
+            </div>
+            <div className="stat-card">
+              <div className="stat-icon">😞</div>
+              <span className="stat-value">{stats.loses || 0}</span>
+              <span className="stat-label">Derrotas</span>
+            </div>
+            <div className="stat-card">
+              <div className="stat-icon">📊</div>
+              <span className="stat-value">{stats.rank || 0}</span>
+              <span className="stat-label">Ranking</span>
+            </div>
+            <div className="stat-card">
+              <div className="stat-icon">⭐</div>
+              <span className="stat-value">{stats.stars || 0}</span>
+              <span className="stat-label">Estrellas</span>
+            </div>
+            {/* <div className="stat-card">
+              <span className="stat-value">{stats.pref_position || "N/A"}</span>
+              <span className="stat-label">Posición</span>
+            </div> */}
+          </div>
+        )}
+      </div>
 
-      <h3>⚽ Retos donde participo</h3>
-      <ul>
-        {retosParticipando.map((reto) => (
-          <li key={reto.id}>
-            {reto.mode} en {reto.place} –{" "}
-            {reto.confirmed_players?.includes(userId) ? "✅ Confirmado" : "❌ No confirmado"}
-          </li>
-        ))}
-      </ul>
     </div>
   );
 }

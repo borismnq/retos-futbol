@@ -1,0 +1,439 @@
+/* PWA-specific styles */
+:root {
+  --primary-color: #00b894;
+  --primary-dark: #00a884;
+  --background-dark: #1a1a1a;
+  --background-darker: #121212;
+  --text-light: #f5f5f5;
+  --text-muted: #a0a0a0;
+  --border-radius: 12px;
+  --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --transition: all 0.3s ease;
+}
+
+/* Base styles for PWA elements */
+.pwa-toast {
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1rem;
+  left: 1rem;
+  max-width: 400px;
+  margin: 0 auto;
+  background: var(--background-dark);
+  color: var(--text-light);
+  border-radius: var(--border-radius);
+  padding: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: var(--shadow);
+  z-index: 1000;
+  transform: translateY(100px);
+  opacity: 0;
+  transition: var(--transition);
+  border-left: 4px solid var(--primary-color);
+}
+
+.pwa-toast.show {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.pwa-toast.fade-out {
+  opacity: 0;
+  transform: translateY(-20px);
+}
+
+.pwa-toast-close {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 0.25rem 0.5rem;
+  margin-left: 0.5rem;
+  line-height: 1;
+  transition: var(--transition);
+}
+
+.pwa-toast-close:hover {
+  color: var(--text-light);
+}
+
+.pwa-toast-content {
+  flex: 1;
+}
+
+.pwa-toast-content strong {
+  display: block;
+  margin-bottom: 0.25rem;
+  color: var(--primary-color);
+}
+
+.pwa-toast-content p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+/* Update Dialog */
+.pwa-update-dialog {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+  padding: 1rem;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.pwa-update-content {
+  background: var(--background-dark);
+  border-radius: var(--border-radius);
+  padding: 1.5rem;
+  max-width: 400px;
+  width: 100%;
+  box-shadow: var(--shadow);
+  border-top: 4px solid var(--primary-color);
+}
+
+.pwa-update-content h3 {
+  margin-top: 0;
+  margin-bottom: 1rem;
+  color: var(--text-light);
+}
+
+.pwa-update-content p {
+  margin: 0 0 1.5rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+.pwa-update-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+}
+
+.pwa-button {
+  padding: 0.5rem 1rem;
+  border-radius: var(--border-radius);
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+  font-size: 0.9rem;
+}
+
+.pwa-button.primary {
+  background: var(--primary-color);
+  color: white;
+}
+
+.pwa-button.primary:hover {
+  background: var(--primary-dark);
+  transform: translateY(-1px);
+}
+
+.pwa-button.secondary {
+  background: transparent;
+  color: var(--text-muted);
+  border: 1px solid var(--text-muted);
+}
+
+.pwa-button.secondary:hover {
+  color: var(--text-light);
+  border-color: var(--text-light);
+}
+
+/* Install button */
+.pwa-install-button {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  min-width: 56px;
+  height: 56px;
+  padding: 0 24px 0 16px;
+  border-radius: 28px;
+  background-color: #00b894;
+  color: white;
+  border: none;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  opacity: 0;
+  transform: translateY(20px);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  font-weight: 500;
+  font-size: 15px;
+  letter-spacing: 0.5px;
+  text-transform: none;
+  -webkit-tap-highlight-color: transparent;
+  outline: none;
+  overflow: hidden;
+}
+
+.pwa-install-button.visible {
+  display: flex;
+  opacity: 1;
+  transform: translateY(0);
+  animation: slideUp 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.pwa-install-button:hover {
+  background-color: #00a884;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+}
+
+.pwa-install-button:active {
+  transform: translateY(1px);
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+}
+
+.pwa-install-button svg {
+  width: 24px;
+  height: 24px;
+  margin-right: 8px;
+  flex-shrink: 0;
+}
+
+.pwa-install-button-text {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* App container styles for PWA */
+.app-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: var(--background-darker);
+  color: var(--text-light);
+  transition: var(--transition);
+}
+
+/* App content area */
+.app-content {
+  flex: 1;
+  padding: 1rem;
+  padding-bottom: 5rem; /* Space for bottom navigation */
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Make the app look like a native app when installed */
+@media all and (display-mode: standalone) {
+  .app-container {
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+    height: 100vh;
+    height: 100dvh;
+    overflow: hidden;
+  }
+  
+  .app-content {
+    padding-bottom: calc(5rem + env(safe-area-inset-bottom));
+    height: 100%;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  body {
+    /* Add extra padding at the bottom for iOS home screen bar */
+    padding-bottom: calc(env(safe-area-inset-bottom) + 10px);
+  }
+  
+  /* Hide the browser UI elements */
+  .app-header {
+    padding-top: max(1rem, env(safe-area-inset-top));
+    /* Add more space at the top for the status bar on iOS */
+    height: calc(60px + env(safe-area-inset-top));
+    min-height: calc(60px + env(safe-area-inset-top));
+  }
+  
+  /* Add a nice status bar background */
+  .app-header::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: env(safe-area-inset-top);
+    background: var(--bg-secondary);
+    z-index: 1000;
+  }
+}
+
+/* Install button styles */
+#install-button {
+  position: fixed;
+  bottom: calc(80px + env(safe-area-inset-bottom));
+  right: 1rem;
+  background: var(--accent-green);
+  color: white;
+  border: none;
+  border-radius: 25px;
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: none; /* Hidden by default, shown by JS */
+}
+
+#install-button:hover {
+  background: var(--accent-green-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+}
+
+#install-button:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Offline indicator */
+.offline-indicator {
+  position: fixed;
+  bottom: 1rem;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--danger);
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-size: 0.875rem;
+  z-index: 1000;
+  display: none;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Add to home screen prompt */
+.add-to-home-prompt {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: var(--bg-card);
+  padding: 1rem;
+  padding-bottom: calc(1rem + env(safe-area-inset-bottom));
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  z-index: 1000;
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.2);
+  transform: translateY(100%);
+  transition: transform 0.3s ease;
+}
+
+.add-to-home-prompt.visible {
+  transform: translateY(0);
+}
+
+.add-to-home-prompt p {
+  margin: 0;
+  margin-right: 1rem;
+  font-size: 0.9rem;
+}
+
+.add-to-home-prompt button {
+  background: var(--accent-green);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 0.5rem 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+/* Loading spinner for PWA */
+.pwa-loading {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--bg-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+}
+
+.pwa-loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  border-top-color: var(--accent-green);
+  animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* PWA update available banner */
+.pwa-update-banner {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: var(--warning);
+  color: #000;
+  padding: 1rem;
+  text-align: center;
+  z-index: 1000;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-right: 1.5rem;
+}
+
+.pwa-update-banner button {
+  background: rgba(0, 0, 0, 0.2);
+  border: none;
+  color: #000;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.pwa-update-banner button:hover {
+  background: rgba(0, 0, 0, 0.3);
+}

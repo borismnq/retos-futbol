@@ -1,11 +1,7 @@
-// src/components/FormularioCrearReto.jsx
 import { useState } from "react";
-// import { addDoc, collection } from "firebase/firestore";
 import { crearReto } from "../api";
 
-// import { db } fro  m "../firebase";
-
-function FormularioCrearReto({ onRetoCreado, userId = "usuario123" }) {
+function FormularioCrearReto({ onRetoCreado, userId, userName }) {
   const [form, setForm] = useState({
     mode: "5vs5",
     place: "",
@@ -13,24 +9,28 @@ function FormularioCrearReto({ onRetoCreado, userId = "usuario123" }) {
     time: "",
     duration: 60,
   });
+  const [creatorPosition, setCreatorPosition] = useState("medio");
   const [errores, setErrores] = useState({});
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
     setErrores({}); // limpia errores al escribir
   };
+
   const validar = () => {
     const errores = {};
     const hoy = new Date().toISOString().split("T")[0];
 
-    if (!form.place || form.place.length < 3) errores.place = "Debe tener al menos 3 letras";
-    if (!form.date) errores.date = "Requerida";
-    else if (form.date < hoy) errores.date = "No puede ser pasada";
-    if (!form.time) errores.time = "Requerida";
-    if (!form.duration || form.duration <= 0) errores.duration = "Debe ser mayor a 0";
+    if (!form.place || form.place.length < 3) errores.place = "Debe tener al menos 3 caracteres";
+    if (!form.date) errores.date = "La fecha es requerida";
+    else if (form.date < hoy) errores.date = "La fecha no puede ser en el pasado";
+    if (!form.time) errores.time = "La hora es requerida";
+    if (!form.duration || form.duration <= 0) errores.duration = "La duración debe ser mayor a 0";
 
     return errores;
   };
+
   const crearRetoSubmit = async (e) => {
     e.preventDefault();
     const validaciones = validar();
@@ -39,82 +39,138 @@ function FormularioCrearReto({ onRetoCreado, userId = "usuario123" }) {
       return;
     }
 
-    const nuevo = {
-      ...form,
-      duration: parseInt(form.duration),
-      creator_id: userId,
-    };
+    setLoading(true);
+    try {
+      const nuevo = {
+        ...form,
+        duration: parseInt(form.duration),
+        creator_id: userId,
+        creator_name: userName,
+        creator_position: creatorPosition,
+      };
 
-    await crearReto(nuevo);
-    setForm({ mode: "5vs5", place: "", date: "", time: "", duration: 60 });
-    alert("✅ Reto creado");
-    if (onRetoCreado) onRetoCreado();
+      await crearReto(nuevo);
+      setForm({ mode: "5vs5", place: "", date: "", time: "", duration: 60 });
+      if (onRetoCreado) onRetoCreado();
+    } catch (error) {
+      console.error("Error creating match:", error);
+      alert("Error al crear el partido. Por favor intenta de nuevo.");
+    } finally {
+      setLoading(false);
+    }
   };
 
-  // const crearReto = async (e) => {
-  //   e.preventDefault();
-  //   const validaciones = validar();
-  //   if (Object.keys(validaciones).length > 0) {
-  //     setErrores(validaciones);
-  //     return;
-  //   }
-  //   const retoNuevo = {
-  //     ...form,
-  //     duration: parseInt(form.duration),
-  //     status: "open",
-  //     creator_id: userId,
-  //     players: [
-  //       {
-  //           id: userId,
-  //           confirmado: true,
-  //       },
-  //     ],
-  //     creado_en: new Date(),
-  //   };
 
-  //   await addDoc(collection(db, "Matches"), retoNuevo);
-  //   setForm({ mode: "5vs5", place: "", date: "", time: "", duration: 60 });
-  //   alert("✅ Reto creado");
-  // };
 
   return (
-    <form onSubmit={crearRetoSubmit} style={{ border: "1px solid #ccc", padding: "1rem", marginBottom: "2rem" }}>
-      <h3>➕ Crear nuevo reto</h3>
-
-      <label>
-        Modo:
-        <select name="mode" value={form.mode} onChange={handleChange}>
-          <option value="5vs5">5 vs 5</option>
-          <option value="6vs6">6 vs 6</option>
-          <option value="7vs7">7 vs 7</option>
+    <form onSubmit={crearRetoSubmit}>
+      <div className="form-group">
+        <label className="form-label">Modo de juego</label>
+        <select 
+          name="mode" 
+          value={form.mode} 
+          onChange={handleChange}
+          className="form-input"
+        >
+          <option value="5vs5">⚽ 5 vs 5 (10 jugadores)</option>
+          <option value="6vs6">⚽ 6 vs 6 (12 jugadores)</option>
+          <option value="7vs7">⚽ 7 vs 7 (14 jugadores)</option>
         </select>
-      </label><br /><br />
+      </div>
 
-      <label>
-        Lugar:
-        <input type="text" name="place" value={form.place} onChange={handleChange} />
-        {errores.place && <span style={{ color: "red" }}> ⚠ {errores.place}</span>}
-      </label><br /><br />
+      <div className="form-group">
+        <label className="form-label">📍 Lugar del partido</label>
+        <input 
+          type="text" 
+          name="place" 
+          value={form.place} 
+          onChange={handleChange}
+          className="form-input"
+          placeholder="ej: Cancha Municipal, Parque Central..."
+        />
+        {errores.place && <div className="form-error">⚠️ {errores.place}</div>}
+      </div>
 
-      <label>
-        Fecha:
-        <input type="date" name="date" value={form.date} onChange={handleChange} />
-        {errores.date && <span style={{ color: "red" }}> ⚠ {errores.date}</span>}
-      </label><br /><br />
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
+        <div className="form-group">
+          <label className="form-label">🗓️ Fecha</label>
+          <input 
+            type="date" 
+            name="date" 
+            value={form.date} 
+            onChange={handleChange}
+            className="form-input"
+          />
+          {errores.date && <div className="form-error">⚠️ {errores.date}</div>}
+        </div>
 
-      <label>
-        Hora:
-        <input type="time" name="time" value={form.time} onChange={handleChange} />
-        {errores.time && <span style={{ color: "red" }}> ⚠ {errores.time}</span>}
-      </label><br /><br />
+        <div className="form-group">
+          <label className="form-label">🕐 Hora</label>
+          <input 
+            type="time" 
+            name="time" 
+            value={form.time} 
+            onChange={handleChange}
+            className="form-input"
+            step="600"
+          />
+          {errores.time && <div className="form-error">⚠️ {errores.time}</div>}
+        </div>
+      </div>
 
-      <label>
-        Duración (minutos):
-        <input type="number" name="duration" value={form.duration} onChange={handleChange} />
-        {errores.duration && <span style={{ color: "red" }}> ⚠ {errores.duration}</span>}
-      </label><br /><br />
+      <div className="form-group">
+        <label className="form-label">Tu posición (creador)</label>
+        <div className="position-buttons">
+          {[
+            { id: 'arquero', icon: '🧤', label: 'Arquero' },
+            { id: 'defensa', icon: '🛡️', label: 'Defensa' },
+            { id: 'medio', icon: '🎯', label: 'Medio' },
+            { id: 'delantero', icon: '⚡', label: 'Delantero' }
+          ].map((pos) => (
+            <button
+              key={pos.id}
+              type="button"
+              className={`position-btn sm ${creatorPosition === pos.id ? 'selected' : ''}`}
+              onClick={() => setCreatorPosition(pos.id)}
+            >
+              <span className="position-btn-icon">{pos.icon}</span>
+              <span className="position-btn-label">{pos.label}</span>
+            </button>
+          ))}
+        </div>
+      </div>
 
-      <button type="submit" style={{ marginTop: "1rem" }}>Crear reto</button>
+      <div className="form-group">
+        <label className="form-label">⏱️ Duración (minutos)</label>
+        <input 
+          type="number" 
+          name="duration" 
+          value={form.duration} 
+          onChange={handleChange}
+          className="form-input"
+          min="30"
+          max="180"
+          step="15"
+          placeholder="90"
+        />
+        {errores.duration && <div className="form-error">⚠️ {errores.duration}</div>}
+      </div>
+
+      <button 
+        type="submit" 
+        className="btn btn-primary"
+        disabled={loading}
+        style={{ width: "100%", marginTop: "1rem" }}
+      >
+        {loading ? (
+          <>
+            <div className="spinner" style={{ width: "16px", height: "16px" }}></div>
+            Creando partido...
+          </>
+        ) : (
+          "⚽ Crear Partido"
+        )}
+      </button>
     </form>
   );
 }

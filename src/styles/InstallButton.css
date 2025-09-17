@@ -1,0 +1,90 @@
+.install-button {
+  position: fixed;
+  bottom: 80px;
+  right: 20px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background-color: #00b894;
+  color: white;
+  border: none;
+  border-radius: 50px;
+  padding: 10px 20px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+  transition: all 0.3s ease;
+  opacity: 0.95;
+}
+
+.install-button:hover {
+  background-color: #00a884;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
+  opacity: 1;
+}
+
+.install-button:active {
+  transform: translateY(1px);
+}
+
+.install-icon {
+  width: 20px;
+  height: 20px;
+}
+
+/* Hide the button by default, it will be shown by the setupInstallPrompt function */
+.install-button[style*="display: none"] {
+  display: none !important;
+}
+
+/* Animation for the button */
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+.install-button.pulse {
+  animation: pulse 2s infinite;
+}
+
+/* Warning message for non-secure contexts */
+.install-warning {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background-color: #ff6b6b;
+  color: white;
+  padding: 12px 20px;
+  border-radius: 8px;
+  max-width: 300px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.install-warning p {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+/* Responsive adjustments */
+@media (max-width: 480px) {
+  .install-button {
+    bottom: 70px;
+    right: 15px;
+    padding: 8px 16px;
+    font-size: 14px;
+  }
+  
+  .install-icon {
+    width: 18px;
+    height: 18px;
+  }
+}

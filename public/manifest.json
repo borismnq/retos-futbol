@@ -1,0 +1,87 @@
+{
+  "name": "Retos Fútbol",
+  "short_name": "RetosFútbol",
+  "description": "Retos de fútbol - Crea y acepta desafíos de fútbol",
+  "start_url": "/?source=pwa",
+  "display": "standalone",
+  "background_color": "#1a1a1a",
+  "theme_color": "#00b894",
+  "orientation": "portrait",
+  "scope": "/",
+  "id": "/",
+  "prefer_related_applications": false,
+  "categories": [
+    "sports",
+    "soccer",
+    "football",
+    "games"
+  ],
+  "icons": [
+    {
+      "src": "/pwa-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/pwa-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/pwa-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/pwa-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "monochrome"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/screenshots/screenshot1.png",
+      "sizes": "1080x1920",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Pantalla de inicio de Retos Fútbol"
+    },
+    {
+      "src": "/screenshots/screenshot2.png",
+      "sizes": "1920x1080",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Vista de retos en Retos Fútbol"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Nuevo Reto",
+      "short_name": "Nuevo",
+      "description": "Crear un nuevo reto",
+      "url": "/nuevo-reto",
+      "icons": [
+        {
+          "src": "/pwa-192x192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "Mis Retos",
+      "short_name": "Retos",
+      "description": "Ver mis retos",
+      "url": "/mis-retos",
+      "icons": [
+        {
+          "src": "/pwa-192x192.png",
+          "sizes": "192x192"
+        }
+      ]
+    }
+  ]
+}
